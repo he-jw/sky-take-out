@@ -37,4 +37,10 @@ public interface SetmealMapper {
     List<Integer> getByIds(List<Long> ids);
 
     void delete(List<Long> ids);
+
+    @Select("select * from setmeal where id = #{id}")
+    Setmeal getById(Long id);
+
+    @AutoFill(OperationType.UPDATE)
+    void update(Setmeal setmeal);
 }
