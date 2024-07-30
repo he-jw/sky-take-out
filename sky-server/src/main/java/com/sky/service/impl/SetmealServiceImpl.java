@@ -62,4 +62,19 @@ public class SetmealServiceImpl implements SetmealService {
         List<SetmealVO> result = page.getResult();
         return new PageResult(total, result);
     }
+
+    @Override
+    public void delete(List<Long> ids) {
+        // 检查是否有启售中的套餐
+        List<Integer> statuses = setmealMapper.getByIds(ids);
+        for(Integer status : statuses){
+            if (status == StatusConstant.ENABLE){
+                throw new SetmealEnableFailedException(MessageConstant.SETMEAL_ON_SALE);
+            }
+        }
+        // 批量删除套餐中
+        setmealMapper.delete(ids);
+        // 批量删除套餐菜品关联表中的数据
+        setmealDishMapper.delete(ids);
+    }
 }

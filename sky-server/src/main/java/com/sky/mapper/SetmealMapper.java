@@ -11,6 +11,8 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Options;
 import org.apache.ibatis.annotations.Select;
 
+import java.util.List;
+
 @Mapper
 public interface SetmealMapper {
 
@@ -31,4 +33,8 @@ public interface SetmealMapper {
     void save(Setmeal setmeal);
 
     Page<SetmealVO> pageQuery(SetmealPageQueryDTO setmealPageQueryDTO);
+
+    List<Integer> getByIds(List<Long> ids);
+
+    void delete(List<Long> ids);
 }
