@@ -10,6 +10,7 @@ import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Mapper
@@ -41,4 +42,6 @@ public interface DishMapper {
 
     @Select("select * from sky_take_out.dish where category_id = #{categoryId}")
     List<Dish> getByCategoryId(Long categoryId);
+
+    List<Dish> getByCategoryIds(ArrayList<Long> dishIds);
 }

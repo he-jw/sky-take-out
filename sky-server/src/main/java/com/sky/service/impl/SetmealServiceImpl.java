@@ -6,21 +6,21 @@ import com.sky.constant.MessageConstant;
 import com.sky.constant.StatusConstant;
 import com.sky.dto.SetmealDTO;
 import com.sky.dto.SetmealPageQueryDTO;
+import com.sky.entity.Dish;
 import com.sky.entity.Setmeal;
 import com.sky.entity.SetmealDish;
 import com.sky.exception.SetmealEnableFailedException;
+import com.sky.mapper.DishMapper;
 import com.sky.mapper.SetmealDishMapper;
 import com.sky.mapper.SetmealMapper;
 import com.sky.result.PageResult;
-import com.sky.result.Result;
+import com.sky.service.DishService;
 import com.sky.service.SetmealService;
 import com.sky.vo.SetmealVO;
-import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,6 +33,8 @@ public class SetmealServiceImpl implements SetmealService {
     private SetmealMapper setmealMapper;
     @Autowired
     private SetmealDishMapper setmealDishMapper;
+    @Autowired
+    private DishMapper dishMapper;
 
 
     @Override
@@ -109,5 +111,36 @@ public class SetmealServiceImpl implements SetmealService {
             setmealDish.setSetmealId(setmealId);
         });
         setmealDishMapper.insertBatch(setmealDishes);
+    }
+
+    @Override
+    public void startOrStop(Integer status, Long id) {
+        if (status == StatusConstant.ENABLE){
+            // 起售套餐时，如果套餐内包含停售的菜品，则不能起售
+            List<SetmealDish> setmealDishes = setmealDishMapper.getDishesBySetmealId(id);
+            ArrayList<Long> dishIds = new ArrayList<>();
+            for (SetmealDish setmealDish : setmealDishes){
+                dishIds.add(setmealDish.getDishId());
+            }
+            List<Dish> dishes = dishMapper.getByCategoryIds(dishIds);
+            for (Dish dish : dishes){
+                if (dish.getStatus() == StatusConstant.DISABLE){
+                    throw new SetmealEnableFailedException(MessageConstant.SETMEAL_ENABLE_FAILED);
+                }
+            }
+
+            // 起售
+            Setmeal setmeal = new Setmeal();
+            setmeal.setStatus(status);
+            setmeal.setId(id);
+            setmealMapper.update(setmeal);
+        }else if (status == StatusConstant.DISABLE){
+            // 停售
+            Setmeal setmeal = new Setmeal();
+            setmeal.setStatus(status);
+            setmeal.setId(id);
+            setmealMapper.update(setmeal);
+        }
+
     }
 }
