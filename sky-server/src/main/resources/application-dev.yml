@@ -11,3 +11,8 @@ sky:
     access-key-id: LTAI5tBVV4MYmzFFDzvT5NKU
     access-key-secret: YHUPVBvdJk9Egr2GoM0sj8dk0XPsL9
     bucket-name: sky-take-out-ttk
+  redis:
+    host: localhost
+    port: 6379
+    password: 123456
+    database: 10
