@@ -51,7 +51,10 @@ sky:
   wechat:
     appid: ${sky.wechat.appid}
     secret: ${sky.wechat.secret}
-
+  shop:
+    address: 江西省南昌市天南昌县江西师范大学
+  baidu:
+    ak: lJwlb2ScZZA4KhLms3FsWzcAUJzybzVJ
   alioss:
     endpoint: ${sky.alioss.endpoint}
     access-key-id: ${sky.alioss.access-key-id}
