@@ -511,6 +511,25 @@ public class OrderServiceImpl implements OrderService {
         orderMapper.update(orders);
     }
 
+    @Override
+    public void reminder(Long id) {
+        // 根据id查询订单
+        Orders ordersDB = orderMapper.getById(id);
+
+        // 校验订单是否存在
+        if (ordersDB == null) {
+            throw new OrderBusinessException(MessageConstant.ORDER_STATUS_ERROR);
+        }
+
+        HashMap hashMap = new HashMap();
+        hashMap.put("type", 2);//客户催单
+        hashMap.put("orderId", id);
+        hashMap.put("content","订单号:" + ordersDB.getNumber());
+
+        webSocketServer.sendToAllClient(JSON.toJSONString(hashMap));
+
+    }
+
     /**
      * 检查客户的收货地址是否超出配送范围
      * @param address
